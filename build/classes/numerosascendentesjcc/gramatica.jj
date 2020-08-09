@@ -1,0 +1,100 @@
+options {
+  LOOKAHEAD = 1;
+  STATIC = false;
+}
+
+PARSER_BEGIN(gramatica)
+
+package numerosascendentesjcc;
+import static numerosascendentesjcc.lista.agregarNumero;
+import static numerosascendentesjcc.lista.encontrado;
+import static numerosascendentesjcc.lista.verificarOrdenados;
+import static numerosascendentesjcc.lista.limpiarLista;
+import static numerosascendentesjcc.lista.numeros;
+
+    public class gramatica {
+    }
+PARSER_END(gramatica)
+
+/** Lexico */
+SKIP : {
+      " "
+    | "\t"
+    | "\r"
+    | "\n"
+}
+
+TOKEN : {
+     <NUMERO: (["0"-"9"])+>
+    |<COMA: ",">
+}
+/** Fin Lexico */
+
+
+
+
+/* ANALISIS SINTANTICO */
+void S():
+{
+	boolean e=true;
+}
+{
+    e=INICIO()
+    {
+        numeros();
+        limpiarLista();
+        if(e==true){
+            System.out.println(" La lista esta ordenada Ascendentemente");
+        }else{        
+            System.out.println(" La lista no esta ordenanda Ascendentemente");
+        }
+    }
+}
+
+
+
+
+/*	INICIO -> numero SIGUIENTE	*/
+
+boolean INICIO() :
+{
+	int n=0;
+	Token num;
+	boolean e=true;
+}
+{
+    num=<NUMERO>   
+    e=SIGUIENTE()
+    <EOF>
+    {
+        if(e==true){ 
+            n= Integer.parseInt(num.image);	
+            agregarNumero(n);
+            verificarOrdenados();
+            return e=encontrado();
+        }else{
+            return e=encontrado();
+        }	
+    }
+}
+
+
+
+
+/*	SIGUIENTE ->  lambda  | , inicio	*/
+
+boolean SIGUIENTE() :
+{boolean e=true;}
+{  
+    <COMA> INICIO() 
+    {
+        e= encontrado();
+        return e;
+    }
+    |
+    { 
+       e=encontrado();
+       return e;
+    }	
+}
+
